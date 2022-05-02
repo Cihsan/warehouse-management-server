@@ -1,12 +1,14 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express=require('express')
-const app=express()
-const port =process.env.port || 5000
 const cors = require('cors')
+require('dotenv').config()// for envirment variable
+const port = process.env.PORT || 5000
+const app = express()
+
 app.use(cors()) //
 app.use(express.json()) //for parse
+
 /* Declare Path */
-require('dotenv').config()// for envirment variable
 //goods-store
 //4ucRwGPtCEh0zE02
 
