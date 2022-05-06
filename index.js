@@ -1,6 +1,6 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express=require('express')
-const cors = require('cors')
+const cors = require('cors') //support diffrent port
 require('dotenv').config()// for envirment variable
 const port = process.env.PORT || 5000
 const app = express()
@@ -25,6 +25,7 @@ async function run(){
             const product=await allProduct.toArray()
             res.send(product)
         })
+
         app.get('/products/:id',async (req,res)=>{
             const id = req.params.id
             const query={_id:ObjectId(id)}
@@ -36,6 +37,41 @@ async function run(){
             const id= req.params.id
             const query={_id:ObjectId(id)}
             const result=await goodsStore.deleteOne(query)
+            res.send(result)
+        })
+
+        app.post('/products', async(req,res)=>{
+            const newPD=req.body
+            console.log('Adding New User',newPD);
+            const result = await goodsStore.insertOne(newPD)
+            res.send(result)
+        })
+
+        app.put('/products/minus/:id',async (req,res)=>{
+            const id = req.params.id
+            console.log(id);
+            const minus=req.body
+            const filter={_id:ObjectId(id)}
+           const options={upsert:true}
+           const updateDoc={
+               $set:{
+                   minus,
+               }
+           }
+           const result= await minus.replaceOne(filter,updateDoc,options)
+            res.send(result)
+        })
+        app.put('/products/plus/:id',async (req,res)=>{
+            const id = req.params.id
+            const newQt=req.body
+            const filter={_id:ObjectId(id)}
+           const options={upsert:true}
+           const updateDoc={
+               $set:{
+                   qt:goodsStore.qt,
+               }
+           }
+           const result= await newQt.findOneAndReplace(filter,updateDoc,options)
             res.send(result)
         })
         
