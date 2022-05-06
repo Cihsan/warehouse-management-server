@@ -20,6 +20,20 @@ async function run(){
         const goodsStore = client.db("goodsDB").collection("goods");
         const myItemStore = client.db("myItemDB").collection("myItems");
         //get
+        app.get('/my-item', async(req,res)=>{
+            const getToken = req.headers.authorization;
+            const [email, cToken] = getToken.split(" ")
+            const decoded = compareToken(cToken)
+
+            if (email === decoded?.email) {
+                const orders = await myItemStore.find({email:email}).toArray();
+                res.send(orders);
+            }
+            else {
+                res.send({ success: 'UnAuthoraized Access' })
+            }
+        })
+
         app.get('/products', async(req,res)=>{
             const query={}
             const allProduct=goodsStore.find(query)
@@ -57,11 +71,8 @@ async function run(){
         })
         app.post('/login', async(req,res)=>{
             const email=req.body
-            const token = jwt.sign( email , process.env.VALID_TOKEN);
+            const token = jwt.sign(email, process.env.VALID_TOKEN);
             res.send({token})
-            console.log(token);
-            // const result = await goodsStore.insertOne(newPD)
-            // res.send(result)
         })
 
         app.put('/products/minus/:id',async (req,res)=>{
@@ -91,8 +102,6 @@ async function run(){
            const result= await newQt.findOneAndReplace(filter,updateDoc,options)
             res.send(result)
         })
-        
-        
     }
     finally{
         //await client.close()
