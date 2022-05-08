@@ -55,22 +55,22 @@ async function run() {
             const result = await goodsStore.deleteOne(query)
             res.send(result)
         })
-
+       
         app.post('/products', async(req,res)=>{
             const newPD=req.body
-            const result = await goodsStore.insertOne(newPD);
-            res.send(result)
-            // const getToken = req.headers.authorization;
-            // const [email, cToken] = getToken.split(" ")
-            // const decoded = compareToken(cToken)
-            /* if (email === decoded.email) {
+            /* const result = await goodsStore.insertOne(newPD);
+            res.send(result) */
+            const getToken = req.headers.authorization;
+            const [email, cToken] = getToken.split(" ")
+            const decoded = compareToken(cToken)
+            if (email === decoded.email) {
                 const result = await goodsStore.insertOne(newPD);
                 const result1 = await myItemStore.insertOne(newPD);
                 res.send({ success: 'Added Product Successfully' })
             }
             else {
                 res.send({ success: 'UnAuthoraized Access' })
-            } */
+            }
         })
         app.post('/login', async (req, res) => {
             const email = req.body
@@ -122,7 +122,7 @@ app.listen(port, () => {
     console.log(`Show Here ${port}`)
 })
 
-/* function compareToken(token) {
+function compareToken(token) {
     let email;
     jwt.verify(token, process.env.VALID_TOKEN, function (err, decoded) {
         if (err) {
@@ -134,4 +134,4 @@ app.listen(port, () => {
         }
     });
     return email;
-} */
+}
